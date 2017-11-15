@@ -8,5 +8,53 @@
     <artifactId>jackson-poc</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <source.level>1.8</source.level>
+        <spring.data.jpa.version>2.0.0.RELEASE</spring.data.jpa.version>
+        <jackson.version>2.9.0</jackson.version>
+        <assertj.version>3.8.0</assertj.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring.data.jpa.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${source.level}</source>
+                    <target>${source.level}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
