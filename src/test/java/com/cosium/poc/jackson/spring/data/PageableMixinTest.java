@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +39,7 @@ public class PageableMixinTest {
 
         objectMapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
 
-        List<MixIn> mixIns = Lists.newArrayList(
+        Stream.of(
                 new DirectionMixIn(),
                 new OrderMixIn(),
 //                new PageableMixIn(),
@@ -47,8 +48,7 @@ public class PageableMixinTest {
                 new PageMixIn(),
                 new PageRequestMixIn(),
                 new SortMixIn()
-        );
-        mixIns.forEach(mixIn -> objectMapper.addMixIn(mixIn.getMixedClass(), mixIn.getClass()));
+        ).forEach(mixIn -> objectMapper.addMixIn(mixIn.getMixedClass(), mixIn.getClass()));
 
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Pageable.class, new PageableDeserializer());

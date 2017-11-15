@@ -6,15 +6,15 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +40,7 @@ public class PageMixInTest {
 
         objectMapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
 
-        List<MixIn> mixIns = Lists.newArrayList(
+        Stream.of(
                 new DirectionMixIn(),
                 new OrderMixIn(),
                 new PageableMixIn(),
@@ -49,8 +49,12 @@ public class PageMixInTest {
                 new PageMixIn(),
                 new PageRequestMixIn(),
                 new SortMixIn()
-        );
-        mixIns.forEach(mixIn -> objectMapper.addMixIn(mixIn.getMixedClass(), mixIn.getClass()));
+        )
+                .forEach(mixIn -> objectMapper.addMixIn(mixIn.getMixedClass(), mixIn.getClass()));
+
+//        SimpleModule module = new SimpleModule();
+//        module.addDeserializer(Pageable.class, new PageableDeserializer());
+//        objectMapper.registerModule(module);
     }
 
     @Test
@@ -98,13 +102,14 @@ public class PageMixInTest {
                 "}";
         Page<String> after = objectMapper.readValue(json, Page.class);
 
-        assertThat(after.getContent()).containsExactlyElementsOf(Lists.newArrayList("test1", "test2"));
-        assertThat(after.getTotalElements()).isEqualTo(10);
         assertThat(after.getTotalPages()).isEqualTo(5);
         assertThat(after.getNumber()).isEqualTo(2);
+        assertThat(after.getSort()).isEqualTo(Sort.by(Sort.Order.by("property")));
+
+        assertThat(after.getContent()).containsExactlyElementsOf(Lists.newArrayList("test1", "test2"));
+        assertThat(after.getTotalElements()).isEqualTo(10);
         assertThat(after.getNumberOfElements()).isEqualTo(2);
         assertThat(after.getSize()).isEqualTo(2);
-        assertThat(after.getSort()).isEqualTo(Sort.by(Sort.Order.by("property")));
     }
 
 }
