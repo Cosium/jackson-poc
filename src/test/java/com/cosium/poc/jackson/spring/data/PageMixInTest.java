@@ -25,8 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class PageMixInTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PageMixInTest.class);
-
     private ObjectMapper objectMapper;
 
     @Before
@@ -56,20 +54,57 @@ public class PageMixInTest {
     }
 
     @Test
-    public void test() throws Exception {
-        Pageable pageable = PageRequest.of(2, 2, Sort.by(Sort.Order.by("property")));
-        Page<String> before = new PageImpl<>(Arrays.asList("test1", "test2"), pageable, 10);
-        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(before);
-        LOG.info("Serialized object : {}", json);
+    public void testDeserialization() throws Exception {
+//        Pageable pageable = PageRequest.of(2, 2, Sort.by(Sort.Order.by("property")));
+//        Page<String> before = new PageImpl<>(Arrays.asList("test1", "test2"), pageable, 10);
+        String json = "{\n" +
+                "  \"content\" : [ \"test1\", \"test2\" ],\n" +
+                "  \"pageNumber\" : 2,\n" +
+                "  \"pageSize\" : 2,\n" +
+                "  \"sort\" : {\n" +
+                "    \"orders\" : [ {\n" +
+                "      \"direction\" : \"ASC\",\n" +
+                "      \"property\" : \"property\",\n" +
+                "      \"nullHandling\" : \"NATIVE\",\n" +
+                "      \"ignoreCase\" : false,\n" +
+                "      \"ascending\" : true,\n" +
+                "      \"descending\" : false\n" +
+                "    } ],\n" +
+                "    \"sorted\" : true,\n" +
+                "    \"unsorted\" : false\n" +
+                "  },\n" +
+                "  \"offset\" : 4,\n" +
+                "  \"paged\" : true,\n" +
+                "  \"unpaged\" : false,\n" +
+                "  \"totalElements\" : 10,\n" +
+                "  \"totalPages\" : 5,\n" +
+                "  \"last\" : false,\n" +
+                "  \"numberOfElements\" : 2,\n" +
+                "  \"sort\" : {\n" +
+                "    \"orders\" : [ {\n" +
+                "      \"direction\" : \"ASC\",\n" +
+                "      \"property\" : \"property\",\n" +
+                "      \"nullHandling\" : \"NATIVE\",\n" +
+                "      \"ignoreCase\" : false,\n" +
+                "      \"ascending\" : true,\n" +
+                "      \"descending\" : false\n" +
+                "    } ],\n" +
+                "    \"sorted\" : true,\n" +
+                "    \"unsorted\" : false\n" +
+                "  },\n" +
+                "  \"first\" : false,\n" +
+                "  \"size\" : 2,\n" +
+                "  \"number\" : 2\n" +
+                "}";
         Page<String> after = objectMapper.readValue(json, Page.class);
 
-        assertThat(before.getContent()).containsExactlyElementsOf(after.getContent());
-        assertThat(before.getTotalElements()).isEqualTo(after.getTotalElements());
-        assertThat(before.getTotalPages()).isEqualTo(after.getTotalPages());
-        assertThat(before.getNumber()).isEqualTo(after.getNumber());
-        assertThat(before.getNumberOfElements()).isEqualTo(after.getNumberOfElements());
-        assertThat(before.getSize()).isEqualTo(after.getSize());
-        assertThat(before.getSort()).isEqualTo(after.getSort());
+        assertThat(after.getContent()).containsExactlyElementsOf(Lists.newArrayList("test1", "test2"));
+        assertThat(after.getTotalElements()).isEqualTo(10);
+        assertThat(after.getTotalPages()).isEqualTo(5);
+        assertThat(after.getNumber()).isEqualTo(2);
+        assertThat(after.getNumberOfElements()).isEqualTo(2);
+        assertThat(after.getSize()).isEqualTo(2);
+        assertThat(after.getSort()).isEqualTo(Sort.by(Sort.Order.by("property")));
     }
 
 }
