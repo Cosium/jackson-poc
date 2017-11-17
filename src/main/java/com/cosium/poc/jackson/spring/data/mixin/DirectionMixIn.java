@@ -1,4 +1,4 @@
-package com.cosium.poc.jackson.spring.data;
+package com.cosium.poc.jackson.spring.data.mixin;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.data.domain.Sort;

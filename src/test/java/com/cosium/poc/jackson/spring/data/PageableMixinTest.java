@@ -1,5 +1,8 @@
 package com.cosium.poc.jackson.spring.data;
 
+import com.cosium.poc.jackson.spring.data.deser.PageableDeserializer;
+import com.cosium.poc.jackson.spring.data.mixin.*;
+import com.cosium.poc.jackson.spring.data.modifier.PageableDeserializerModifier;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -40,7 +43,7 @@ public class PageableMixinTest {
         Stream.of(
                 new DirectionMixIn(),
                 new OrderMixIn(),
-//                new PageableMixIn(),
+                new PageableMixIn(),
                 new PageDeserializationMixIn<>(),
                 new PageImplMixIn(),
                 new PageMixIn(),
@@ -49,7 +52,7 @@ public class PageableMixinTest {
         ).forEach(mixIn -> objectMapper.addMixIn(mixIn.getMixedClass(), mixIn.getClass()));
 
         SimpleModule module = new SimpleModule();
-        module.addDeserializer(Pageable.class, new PageableDeserializer());
+        module.setDeserializerModifier(new PageableDeserializerModifier());
         objectMapper.registerModule(module);
     }
 

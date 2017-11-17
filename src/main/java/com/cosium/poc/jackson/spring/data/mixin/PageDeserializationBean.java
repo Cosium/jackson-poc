@@ -1,4 +1,4 @@
-package com.cosium.poc.jackson.spring.data;
+package com.cosium.poc.jackson.spring.data.mixin;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

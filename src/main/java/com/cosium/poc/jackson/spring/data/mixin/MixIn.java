@@ -1,4 +1,4 @@
-package com.cosium.poc.jackson.spring.data;
+package com.cosium.poc.jackson.spring.data.mixin;
 
 /**
  * Created on 15/11/17.

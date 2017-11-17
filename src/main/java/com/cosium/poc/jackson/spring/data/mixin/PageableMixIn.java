@@ -1,4 +1,4 @@
-package com.cosium.poc.jackson.spring.data;
+package com.cosium.poc.jackson.spring.data.mixin;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.data.domain.PageRequest;

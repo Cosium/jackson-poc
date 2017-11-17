@@ -1,5 +1,8 @@
 package com.cosium.poc.jackson.spring.data;
 
+import com.cosium.poc.jackson.spring.data.deser.PageableDeserializer;
+import com.cosium.poc.jackson.spring.data.mixin.*;
+import com.cosium.poc.jackson.spring.data.modifier.PageableDeserializerModifier;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -123,6 +126,39 @@ public class PageMixInTest {
 
         expect(objectMapper.readValue(json, Page.class));
     }
+
+    @Test
+    public void test_deserialization_with_pageable_deserializer_modifier() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.enable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+        objectMapper.disable(MapperFeature.IGNORE_DUPLICATE_MODULE_REGISTRATIONS);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
+        objectMapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
+        objectMapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+
+        objectMapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
+
+        Stream.of(
+                new DirectionMixIn(),
+                new OrderMixIn(),
+                new PageableMixIn(),
+                new PageDeserializationMixIn<>(),
+                new PageImplMixIn(),
+                new PageMixIn(),
+                new PageRequestMixIn(),
+                new SortMixIn()
+        )
+                .forEach(mixIn -> objectMapper.addMixIn(mixIn.getMixedClass(), mixIn.getClass()));
+
+        SimpleModule module = new SimpleModule();
+        module.setDeserializerModifier(new PageableDeserializerModifier());
+        objectMapper.registerModule(module);
+
+        expect(objectMapper.readValue(json, Page.class));
+    }
+
 
     private void expect(Page<String> after) {
         assertThat(after.getTotalPages()).isEqualTo(5);

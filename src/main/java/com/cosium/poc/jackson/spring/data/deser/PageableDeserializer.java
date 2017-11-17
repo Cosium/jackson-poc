@@ -1,4 +1,4 @@
-package com.cosium.poc.jackson.spring.data;
+package com.cosium.poc.jackson.spring.data.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -14,7 +14,7 @@ import java.io.IOException;
  *
  * @author Reda.Housni-Alaoui
  */
-class PageableDeserializer extends JsonDeserializer<Pageable> {
+public class PageableDeserializer extends JsonDeserializer<Pageable> {
     @Override
     public Pageable deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         return p.getCodec().readValue(p, PageRequest.class);
